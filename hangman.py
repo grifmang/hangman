@@ -12,11 +12,11 @@ def clearScreen():
 
 def loadWords():
     print "Loading word list from file..."
-	# inFile: file
-    inFile = open('/home/timgriffith/Dropbox/mit_python/words.txt','r', 0)
-	# line: string
+    # inFile: file
+    inFile = open(WORDLIST_FILENAME,'r', 0)
+    # line: string
     line = inFile.readline()
-	# wordlist: list of strings
+    # wordlist: list of strings
     wordlist = string.split(line)
     print "  ", len(wordlist), "words loaded."
     return wordlist
@@ -30,22 +30,22 @@ def isWordGuessed(secretWord, lettersGuessed):
     count = 0
     result = []
     for char in secretWord:
-		if char in lettersGuessed:
-			result.append(char)
-			if char not in result:
-				count += 1
+        if char in lettersGuessed:
+            result.append(char)
+            if char not in result:
+                count += 1
     if len(result) == len(secretWord):
-		return True
+        return True
     else:
-		return False
+        return False
 
 
 def getGuessedWord(secretWord, lettersGuessed):
     result = []
     for char in secretWord:
-		if char not in lettersGuessed:
-			char = ' _ '
-		result.append(char)
+        if char not in lettersGuessed:
+            char = ' _ '
+        result.append(char)
     return ' '.join(map(str, result))
 
 
@@ -53,9 +53,9 @@ def getAvailableLetters(lettersGuessed):
     alreadyGuessed = []
     alpha = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z']
     for char in lettersGuessed:
-		if char not in alreadyGuessed:
-			alpha.remove(char)
-		alreadyGuessed.append(char)
+        if char not in alreadyGuessed:
+            alpha.remove(char)
+        alreadyGuessed.append(char)
     return ''.join(map(str, alpha))
     
 
@@ -72,13 +72,13 @@ def hangman(secretWord):
         print 'You have ' + str(guesses) + ' guesses left.'
         print 'Available letters: ' + getAvailableLetters(results)
         guess = raw_input("Please guess a letter: ")
-	guess = guess.lower()
+        guess = guess.lower()
         results.append(guess)
         if guess in guessed:
             print "Oops! You've already guessed that letter: " + getGuessedWord(secretWord,results)
             outputGraphics(guesses)
             continue    
-        if guesses <= 1:
+        if guesses < 1:
             print 'Oops! That letter is not in my word: ' + getGuessedWord(secretWord,results)
             print 'Sorry, you ran out of guesses. The word was ' + secretWord + '.'
             outputGraphics(guesses)
@@ -92,7 +92,9 @@ def hangman(secretWord):
             outputGraphics(guesses)
         guessed += guess
     if isWordGuessed(secretWord,results) == True:
+        clearScreen()
         print 'Congratulations, you won!'
+        playGame()
         
 def outputGraphics(guesses):
     if guesses == 7:
@@ -128,7 +130,7 @@ def outputGraphics(guesses):
     elif guesses == 4:
         print('|---------|         |------------------------------|')
         print('|                   |You got 4 guesses!            |')
-        print('|                   |are you sure you can save me! |')
+        print('|                   |Are you sure you can save me! |')
         print('|                   |------------------------------|')
         print('|                   /')
         print('|                  O')
@@ -158,7 +160,7 @@ def outputGraphics(guesses):
     elif guesses == 1:
         print('|---------|')
         print('|    |      |-----------------------|')
-        print("|    |      |You've your last guess!|")
+        print("|    |      |This is your last try !|")
         print('|    O -----|hasta la vista baby!   |')
         print('|   /|\\     |-----------------------|')
         print('|    |')
@@ -175,6 +177,21 @@ def outputGraphics(guesses):
         print('|   / \\')
         print('| |\\   /|     ')
         print('|_|_\\_/_|______________________')
+        playGame()
         
-secretWord = chooseWord(wordlist).lower()
-hangman(secretWord)
+
+def playGame():
+    startgame = raw_input('Do you want to start a new game? [y or n]')
+    startgame = startgame.lower()
+    if startgame == 'y' or startgame == 'yes':
+        secretWord = chooseWord(wordlist).lower()
+        hangman(secretWord)
+    elif startgame == 'n' or startgame == 'no':
+        quit()
+    else:
+        print "Please choose yes or no."
+        playGame()
+
+playGame()
+
+
